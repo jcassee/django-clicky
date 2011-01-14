@@ -14,7 +14,7 @@ hosted on GitHub_.
 Copyright (C) 2011 Joost Cassee <joost@cassee.net>.  This software is
 licensed under the MIT License (see LICENSE.txt).
 
-Thanks go to Clicy for their support, and to GitHub for hosting the
+Thanks go to Clicky for their support, and to GitHub for hosting the
 project.
 
 .. _Clicky: http://getclicky.com/
