@@ -84,6 +84,22 @@ If you already use the ``INTERNAL_IPS`` setting, you could set the
 clicky internal addreses to this value.  This will be the default from
 version 2.0.0 upwards.
 
+.. note::
+
+    The template tag can only access the visitor IP address if the
+    HTTP request is present in the template context as the ``request``
+    variable.  For this reason, the ``CLICKY_INTERNAL_IPS`` settings
+    only works if you add this variable to the context yourself when you
+    render the template, or you use the ``RequestContext`` and add the
+    ``django.core.context_processors.request`` context processor to the
+    ``TEMPLATE_CONTEXT_PROCESSORS`` setting::
+
+        TEMPLATE_CONTEXT_PROCESSORS = [
+            ...
+            'django.core.context_processors.request',
+            ...
+        ]
+
 
 Changelog
 =========
