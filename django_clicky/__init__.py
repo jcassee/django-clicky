@@ -73,12 +73,26 @@ can use the ``CLICKY_RENDER_NON_JS_CODE`` setting::
 
     CLICKY_RENDER_NON_JS_CODE = False
 
+Often you do not want to track clicks from your development or internal
+IP addresses.  For this reason you can set the ``CLICKY_INTERNAL_IPS``
+to a list or tuple of addresses that the template tag will not be
+rendered on::
+
+    CLICKY_INTERNAL_IPS = ['192.168.45.2', '192.168.45.5']
+
+If you already use the ``INTERNAL_IPS`` setting, you could set the
+clicky internal addreses to this value.  This will be the default from
+version 2.0.0 upwards.
+
 
 Changelog
 =========
 
 1.0.0
     Initial release.
+
+1.1.0
+    Added ``CLICKY_INTERNAL_IPS`` setting.
 
 """
 

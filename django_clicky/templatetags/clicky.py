@@ -6,6 +6,7 @@ import re
 
 from django import template
 from django.conf import settings
+from django.template import Node, TemplateSyntaxError
 
 
 SITE_ID_RE = re.compile(r'^\d{8}$')
@@ -30,8 +31,8 @@ NONJS_TRACKING_CODE = """
 
 register = template.Library()
 
-@register.simple_tag
-def track_clicky():
+
+def track_clicky(parser, token):
     """
     Clicky tracking template tag.
 
@@ -39,22 +40,43 @@ def track_clicky():
     your Clicky Site ID (as a string) in the ``CLICKY_SITE_ID``
     setting.
     """
-    try:
-        site_id = settings.CLICKY_SITE_ID
-    except AttributeError:
-        raise ClickyException("CLICKY_SITE_ID setting not found")
-    site_id = str(site_id)
-    if not SITE_ID_RE.search(site_id):
-        raise ClickyException("CLICKY_SITE_ID setting must be a "
-                "string containing an eight-digit number: %s" % site_id)
-    vars = {
-        'site_id': site_id,
-    }
-    html = JS_TRACKING_CODE % vars
-    if getattr(settings, 'CLICKY_RENDER_NON_JS_CODE', True):
-        html = "%s%s" % (html, NONJS_TRACKING_CODE % vars)
-    return html
+    bits = token.split_contents()
+    if len(bits) > 1:
+        raise TemplateSyntaxError("'%s' takes no arguments" % bits[0])
+    return TrackClickyNode()
 
+class TrackClickyNode(Node):
+    def __init__(self):
+        try:
+            site_id = settings.CLICKY_SITE_ID
+        except AttributeError:
+            raise ClickyException("CLICKY_SITE_ID setting not found")
+        self.site_id = str(site_id)
+        if not SITE_ID_RE.search(self.site_id):
+            raise ClickyException("CLICKY_SITE_ID setting must be a "
+                    "string containing an eight-digit number: %s" % site_id)
+        self.render_non_js_code = getattr(settings,
+                'CLICKY_RENDER_NON_JS_CODE', True)
+        self.internal_ips = getattr(settings, 'CLICKY_INTERNAL_IPS', ())
+
+    def render(self, context):
+        try:
+            request = context['request']
+            remote_ip = request.META.get('HTTP_X_FORWARDED_FOR',
+                    request.META.get('REMOTE_ADDR', ''))
+            if remote_ip in self.internal_ips:
+                return ""
+        except KeyError:
+            pass
+        vars = {
+            'site_id': self.site_id,
+        }
+        html = JS_TRACKING_CODE % vars
+        if self.render_non_js_code:
+            html = "%s%s" % (html, NONJS_TRACKING_CODE % vars)
+        return html
+
+register.tag('track_clicky', track_clicky)
 
 
 class ClickyException(Exception):
