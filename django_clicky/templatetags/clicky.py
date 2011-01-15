@@ -10,6 +10,14 @@ from django.template import Node, TemplateSyntaxError
 
 
 SITE_ID_RE = re.compile(r'^\d{8}$')
+USER_PROPERTY_CODE = """
+    <script type="text/javascript">
+      var clicky_custom = clicky_custom || {};
+      if (!clicky_custom.session) {
+        clicky_custom.session = {username: '%(username)s'};
+      }
+    </script>
+"""
 JS_TRACKING_CODE = """
     <script type="text/javascript">
     var clicky = { log: function(){ return; }, goal: function(){ return; }};
@@ -68,13 +76,21 @@ class TrackClickyNode(Node):
                 return ""
         except KeyError:
             pass
-        vars = {
-            'site_id': self.site_id,
-        }
-        html = JS_TRACKING_CODE % vars
+        try:
+            user = context['user']
+            if user.is_authenticated():
+                user_html = USER_PROPERTY_CODE % {'username': user.username}
+            else:
+                user_html = ""
+        except KeyError, AttributeError:
+            user_html = ""
+        vars = {'site_id': self.site_id}
+        tracking_html = JS_TRACKING_CODE % vars
         if self.render_non_js_code:
-            html = "%s%s" % (html, NONJS_TRACKING_CODE % vars)
-        return html
+            non_js_tracking_html = NONJS_TRACKING_CODE % vars
+        else:
+            non_js_tracking_html = ""
+        return "".join([user_html, tracking_html, non_js_tracking_html])
 
 register.tag('track_clicky', track_clicky)
 

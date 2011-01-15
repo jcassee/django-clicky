@@ -73,6 +73,27 @@ can use the ``CLICKY_RENDER_NON_JS_CODE`` setting::
 
     CLICKY_RENDER_NON_JS_CODE = False
 
+Clicky data can be annotated with `custom properties`_.  The most
+obviously useful information is whether the visitor is a logged in user.
+The ``track_clicky`` template tag will automatically provide Clicky with
+the visitor username if a user has logged into Django.
+
+.. _`custom properties`: http://getclicky.com/help/customization
+
+.. note::
+
+    The template tag can only access the visitor username if the
+    Django user is present in the template context as the ``user``
+    variable.  You must either use a ``RequestContext`` and have the
+    ``django.contrib.auth.context_processors.auth`` context processor in
+    the ``TEMPLATE_CONTEXT_PROCESSORS`` setting (which is default), or
+    add this variable to the context yourself when you render the
+    template.
+
+
+Ignoring internal visitors
+--------------------------
+
 Often you do not want to track clicks from your development or internal
 IP addresses.  For this reason you can set the ``CLICKY_INTERNAL_IPS``
 to a list or tuple of addresses that the template tag will not be
@@ -104,16 +125,19 @@ version 2.0.0 upwards.
 Changelog
 =========
 
-1.0.0
-    Initial release.
+1.2.0
+    Automatically track logged in users.
 
 1.1.0
-    Added ``CLICKY_INTERNAL_IPS`` setting.
+    Added the ``CLICKY_INTERNAL_IPS`` setting.
+
+1.0.0
+    Initial release.
 
 """
 
 __author__ = "Joost Cassee"
 __email__ = "joost@cassee.net"
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 __copyright__ = "Copyright (C) 2011 Joost Cassee"
 __license__ = "MIT License"
