@@ -125,6 +125,9 @@ version 2.0.0 upwards.
 Changelog
 =========
 
+1.2.1
+    Stopped development.  Use the Clicky module in django-analytical_.
+
 1.2.0
     Automatically track logged in users.
 
@@ -134,10 +137,12 @@ Changelog
 1.0.0
     Initial release.
 
+.. _django-analytical: http://packages.python.org/django-analytical
+
 """
 
 __author__ = "Joost Cassee"
 __email__ = "joost@cassee.net"
-__version__ = "1.2.0"
+__version__ = "1.2.1"
 __copyright__ = "Copyright (C) 2011 Joost Cassee"
 __license__ = "MIT License"

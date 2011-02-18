@@ -1,6 +1,8 @@
 django-clicky
 -------------
 
+**Not developed anymore.** Please use django-analytical_.
+
 The django-clicky application integrates Clicky_ analytics into a
 Django_ project.
 
@@ -17,6 +19,7 @@ licensed under the MIT License (see LICENSE.txt).
 Thanks go to Clicky for their support, and to GitHub for hosting the
 project.
 
+.. _django-analytical: http://packages.python.org/django-analytical
 .. _Clicky: http://getclicky.com/
 .. _Django: http://www.djangoproject.com
 .. _GitHub: http://www.github.com/jcassee/django-clicky
